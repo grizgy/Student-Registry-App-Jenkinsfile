@@ -22,9 +22,24 @@ pipeline {
                 }
             }
 
+
+        stage('Build image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'a388566f-4a99-4c63-bca6-b6339bdd1878', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                    bat "docker build -t grizgy/studentapp:1.0.0 .
+                        docker login -u %user%--password %pass%
+                        docker push grizgy/studentapp:1.0.0"
+                }
+            }
+        }    
+
+
         stage('Deploy to production') {
                 steps {
-                    echo 'deploying'
+                 script {
+                    input("Deploy to production?")
+                 }
+                 echo "Deploying"
                 }
             }
     }
